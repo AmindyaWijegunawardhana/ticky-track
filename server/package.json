@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
     "test:bdd": "cucumber-js \"test/bdd/features/**/*.feature\" --require \"test/bdd/steps/**/*.js\" --require \"test/bdd/support/**/*.js\"",
     "test:ui": "playwright test ui-tests -c playwright.config.js",
     "test:ui:headed": "playwright test ui-tests --headed -c playwright.config.js",
