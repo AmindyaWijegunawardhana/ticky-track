@@ -1,0 +1,86 @@
+{
+  "info": {
+    "name": "Ticky Track API",
+    "_postman_id": "b9d9b0f0-aaaa-bbbb-cccc-eeeeeeeeeeee",
+    "description": "Minimal API tests for Ticky Track",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/health" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('ok true', function () { pm.expect(pm.response.json().ok).to.eql(true); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST feed (valid)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"quantity_ml\": 120\n}" },
+        "url": "{{baseUrl}}/api/feeds"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status 201', () => pm.response.to.have.status(201));",
+              "pm.test('has id', () => pm.expect(pm.response.json()).to.have.property('id'));",
+              "pm.test('quantity 120', () => pm.expect(Number(pm.response.json().quantity_ml)).to.eql(120));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET feeds",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/feeds?limit=5" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status 200', () => pm.response.to.have.status(200));",
+              "pm.test('is array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST feed (invalid)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"quantity_ml\": 0\n}" },
+        "url": "{{baseUrl}}/api/feeds"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status 400', () => pm.response.to.have.status(400));",
+              "pm.test('has error message', () => pm.expect(pm.response.json().error).to.be.a('string'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

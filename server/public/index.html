@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ticky Track — Feeding Logger</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <header class="container">
+    <h1>✅ Ticky Track</h1>
+    <p class="subtitle">Log baby feeding quantity (ml). One simple input with validation.</p>
+  </header>
+
+  <main class="container">
+    <div id="flash" class="flash" hidden></div>
+
+    <section class="card">
+      <h2>Add Feed</h2>
+      <form id="feedForm" class="row">
+        <div class="field">
+          <label for="qty">Quantity (ml)</label>
+          <input id="qty" type="number" step="0.01" min="1" max="500" placeholder="e.g., 120" required />
+        </div>
+        <button class="btn" type="submit">Add</button>
+      </form>
+      <p class="muted mt8">Allowed range: 1 – 500 ml (max 2 decimals).</p>
+    </section>
+
+    <section class="card">
+      <h2>Recent Feeds</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Quantity (ml)</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p class="muted">© <span id="year"></span> Ticky Track</p>
+  </footer>
+</body>
+</html>

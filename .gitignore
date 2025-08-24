@@ -1,0 +1,36 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+server/.env
+
+# Node
+**/node_modules/
+**/coverage/
+**/dist/
+**/build/
+
+# Logs & PIDs
+*.log
+npm-debug.log*
+yarn-*.log*
+pnpm-debug.log*
+server/server.log
+server/server.pid
+
+# Playwright
+server/playwright-report/
+server/test-results/
+server/.playwright/
+
+# Artillery outputs
+server/perf.json
+server/perf.json.html
+
+# Newman artifacts
+newman/
+
+# Editor
+.vscode/
