@@ -1,46 +1,36 @@
 'use strict';
 
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
 
 const { ensureSchema } = require('./db');
-const feedsRouter = require('./routes/feeds');
+const app = require('./middleware/app'); // this builds the Express app with routes/static/etc.
 
-const app = express();
-const PORT = Number(process.env.PORT || 5000);
+const PORT = process.env.PORT || 5000;
 
-// middleware
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+/**
+ * Start HTTP server (used in normal/dev/Playwright runs).
+ * In Jest we DO NOT call this; Jest will import the app only.
+ */
+async function start() {
+  await ensureSchema();
+  const server = app.listen(PORT, () => {
+    console.log(`API running at http://localhost:${PORT}`);
+  });
+  return server;
+}
 
-// static frontend
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
-// health
-app.get('/health', (req, res) => {
-  res.json({ ok: true, service: 'Ticky Track API' });
-});
-
-// api routes
-app.use('/api/feeds', feedsRouter);
-
-// start
-(async () => {
-  try {
-    await ensureSchema();
-    app.listen(PORT, () => {
-      console.log('API running at http://localhost:' + PORT);
-    });
-  } catch (err) {
-    console.error('Startup failed:', err);
-    process.exit(1);
-  }
-})();
-
-module.exports = app;
+/**
+ * If running under Jest (JEST_WORKER_ID is set) or NODE_ENV=test,
+ * export the app WITHOUT listening to avoid port conflicts & hanging handles.
+ */
+if (process.env.JEST_WORKER_ID || process.env.NODE_ENV === 'test') {
+  module.exports = app;
+} else if (require.main === module) {
+  // CLI run: start server
+  start();
+  module.exports = app;
+} else {
+  // Imported by Playwright webServer or other tools: just export app;
+  // the caller can decide to start it.
+  module.exports = app;
+}
